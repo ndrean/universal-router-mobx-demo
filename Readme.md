@@ -9,6 +9,10 @@ Example of navigation with:
 - nested route
 - 404
 
+## Demo on Codesandbox: add "box" in url:
+
+<https://githubbox.com/ndrean/universal-router-mobx-demo>
+
 ## Dockerized
 
 - Multi-staged Dockerfile (Node `yarn install && yarn build` + Nginx `COPY static` + daemon)
