@@ -1,0 +1,52 @@
+# Name the node stage "builder"
+FROM node:10 AS NodeBuilder
+# Set working directory
+WORKDIR /app
+# COPY package.json yarn.lock ./
+# install dependencies / node modules
+# RUN yarn
+#copy src files: dockerignore !!
+COPY . .
+# build assets
+RUN yarn install && yarn build
+
+
+# nginx state for serving content
+# FROM debian:buster-slim AS webserver
+FROM alpine:3
+# then you can hoose type light/full/extras for Nginx 
+# with build argument. Default is "full"
+ARG PKG 
+ENV NGINX_PKG=nginx-${PKG:-light}
+
+# RUN apt-get update \ 
+#    && apt-get install -y ${NGINX_PKG} \
+#    && rm /var/log/nginx/access.log \ 
+#    && rm /var/log/nginx/error.log \ 
+#    && ln -s /dev/stdout /var/log/nginx/access.log \
+#    && ln -s /dev/stderr /var/log/nginx/error.log
+
+RUN apk update &&  apk add -y ${NGINX_PKG} \
+   && rm /var/log/nginx/access.log \ 
+   && rm /var/log/nginx/error.log \ 
+   && ln -s /dev/stdout /var/log/nginx/access.log \
+   && ln -s /dev/stderr /var/log/nginx/error.log
+WORKDIR /usr/share/nginx/html
+# Remove default nginx static assets && update
+RUN rm -rf ./*
+
+FROM webserver
+# Set working directory to nginx asset directory
+WORKDIR /usr/share/nginx/html
+# Remove default nginx static assets && update
+
+# Copy static assets from builder stage
+COPY --from=NodeBuilder /app/build .
+
+# Containers run nginx with global directives and daemon off
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
+
+EXPOSE 80
+# to terminate gracefully
+STOPSIGNAL SIGQUIT
+

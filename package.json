@@ -11,7 +11,6 @@
     "react": "17.0.0",
     "react-dom": "17.0.0",
     "react-scripts": "3.4.3",
-    "recoil": "^0.1.2",
     "universal-router": "9.0.1"
   },
   "devDependencies": {

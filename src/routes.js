@@ -1,6 +1,6 @@
 import React, { createElement as h } from "react";
 import { runInAction, when } from "mobx";
-// import store from "./store.js";
+
 // const LazyNavBar = lazy(() => import("./NavBar.js"));
 // const LazyHome = lazy(() => import("./Home"));
 // const LazyUsers = lazy(() => import("./UsersMobx"));
